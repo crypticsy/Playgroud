@@ -15,7 +15,7 @@ import pygame as pg
 
 
 # Information regarding the game window
-WIDTH = HEIGHT = 500                
+WIDTH = HEIGHT = 512                
 DIMENSION = 8                       # a chess board is 8 X 8 cells
 SQ_SIZE = HEIGHT // DIMENSION
 MAX_FPS = 15                        # for animation
@@ -118,20 +118,22 @@ def main():
                 if len(player_click) == 2:              # when 2 unique clicks have been identified
                     move = ChessEngine.Move( player_click[0], player_click[1], gs.board )
                     
-                    if move in valid_moves:
-                        print(move.get_chess_notation())
-                        gs.make_move(move)
+                    for i in range(len(valid_moves)):
+                        if move == valid_moves[i]:
+                            print(valid_moves[i].get_chess_notation())
+                            gs.make_move(valid_moves[i])
 
-                        player = 'White' if gs.white_to_move else 'Black'
-                        print(f"\n{player} turn to move: ", end="")
-                        # print(np.matrix(gs.board))
+                            player = 'White' if gs.white_to_move else 'Black'
+                            # print(np.matrix(gs.board))
+                            print(f"\n{player} turn to move: ", end="")
 
-                        move_made = True
+                            move_made = True
 
-                        # reset input
-                        sq_selected = ()
-                        player_click.clear()
-                    
+                            # reset input
+                            sq_selected = ()
+                            player_click.clear()
+                            break
+                        
                     else:
                         player_click = [sq_selected]
 
