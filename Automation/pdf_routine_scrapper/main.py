@@ -22,8 +22,8 @@ for page in range(page_count):
         cur = all_lines.pop(0)
         if cur.upper() in week:
             database.setdefault(cur,[])
-            data = [all_lines.pop(0) for _ in range(6)]
-            if mygroup.upper() in data[-1].upper():
+            data = [all_lines.pop(0) for _ in range(8)]
+            if mygroup.upper() in data[5].upper():
                 database[cur].append(data)
 
 
@@ -33,7 +33,7 @@ with open(path+"/routine.txt", "w") as file:
         data.sort(key = lambda x: (x[0][6:8],x[0]))
         output = "------------------- %s -------------------\n"%(week[day])
         for i in data:
-            temp = [i[0], i[2], i[3], "[ "+ i[4]+ " ]", "-->" , i[5], "( "+i[1]+" )"]
+            temp = [i[0], i[2], i[3], "[ "+ i[4]+ " ]", "-->" , i[5], "( "+i[1]+" )",":",i[7]]
             output += '   '.join(temp) + "\n"
         output += "\n"
         # print(output)         # View the output while debugging

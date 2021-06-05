@@ -1,0 +1,25 @@
+------------------- Sunday -------------------
+01:00 PM - 03:00 PM   CS5052NI   Professional Issues, Ethics and Computer Law   [ Ms. Yunisha Bajracharya ]   -->   C2   ( Workshop )   :   SR05 - Subash Shrestha
+
+------------------- Monday -------------------
+01:00 PM - 03:00 PM   CS5002NI   Software Engineering   [ Mr. Rajesh Dware ]   -->   C2   ( Workshop )   :   SR04 - Tower of London
+04:00 PM - 05:30 PM   CS5002NI   Software Engineering   [ Mr. Rubin Thapa ]   -->   C1-C19   ( Discussion )   :   UK TR12 - Gorkha
+05:30 PM - 07:00 PM   CT5004NI   Professional Issues, Ethics and Computer Law   [ Mr. Aadesh Tandukar ]   -->   C1-C19   ( Discussion )   :   UK TR12 - Gorkha
+
+
+------------------- Tuesday -------------------
+10:00 AM - 11:30 AM   CS5052NI   Professional Issues, Ethics and Computer Law   [ Ms. Yunisha Bajracharya ]   -->   C1+C2+C3   ( Lecture )   :   LT01 - Buckingham Palace
+01:00 PM - 02:30 PM   CS5004NI   Emerging Programming Platforms & Tecnologies    [ Mr. Shreyash Mool ]   -->   C1+C2+C3   ( Lecture )   :   LT03 - Westminster Palace
+
+------------------- Wednesday -------------------
+11:30 AM - 01:00 PM   CS5002NI   Software Engineering   [ Mr. Rajesh Dware ]   -->   C1+C2+C3   ( Lecture )   :   LT02 - Kensington Palace
+01:00 PM - 02:30 PM   CS5001NI   Networks and Operating Systems   [ Mr. Dipeshor Silwal ]   -->   C1+C2+C3   ( Lecture )   :   LT02 - Kensington Palac
+04:00 PM - 05:30 PM   CS5004NI   Emerging Programming Platforms & Tecnologies   [ Mr. Shreyash Mool ]   -->   C1-C19   ( Discussion )   :   UK TR08 - Sagarmatha
+
+------------------- Thursday -------------------
+09:00 AM - 11:00 AM   CS5004NI   Emerging Programming Platforms & Tecnologies    [ Mr. Prithivi Maharjan ]   -->   C2   ( Workshop )   :   TR06 - Anna
+04:00 PM - 05:30 PM   CS5001NI   Network and Operating System   [ Mr. Dipeshor Silwal ]   -->   C1-C19   ( Discussion )   :   UK TR12 - Gorkha
+
+------------------- Friday -------------------
+07:00 AM - 09:00 AM   CS5001NI   Networks and Operating Systems   [ Mr. Dipeshor Silwal ]   -->   C2   ( Workshop )   :   TR05 - Machapuchare
+
