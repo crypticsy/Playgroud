@@ -8,7 +8,7 @@ While the engine allows some of the features such as player vs player, player vs
 </br></br>
 
 <p align="center">
-    <img src="./images/gameplay.png" width="400"/>
+    <img src="./images/gameplay.png" width="800"/>
 </p>
 
 
@@ -32,7 +32,6 @@ To install this project, make sure you have the correct version of Python and Py
 ### Installation
 - Switch to Python3.
 - Follow the code below to create virtual environment and install the necessary libraries.
-(Currently tested on Python 3.7.9 with Pygame 2.0.0dev8 and Python 3.8.2 with Pygame 2.0.0 on macOS Catalina)
 ```
 git clone https://github.com/crypticsy/Playground
 cd ./Game_Engine/Chess/
