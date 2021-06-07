@@ -178,7 +178,7 @@ def draw_end_game_text(screen, text):
     text_object = font.render(text, False, pg.Color("gray"))
 
     # Center the font by using font BOARD_WIDTH and BOARD_HEIGHT 
-    text_location = pg.Rect(0, 0, BOARD_WIDTH, BOARD_HEIGHT).move(BOARD_WIDTH / 2 - text_object.get_BOARD_WIDTH() / 2, BOARD_HEIGHT / 2 - text_object.get_BOARD_HEIGHT() / 2)
+    text_location = pg.Rect(0, 0, BOARD_WIDTH, BOARD_HEIGHT).move(BOARD_WIDTH / 2 - text_object.get_width() / 2, BOARD_HEIGHT / 2 - text_object.get_height() / 2)
 
     screen.blit(text_object, text_location)
     text_object = font.render(text, False, pg.Color('black'))
@@ -290,7 +290,7 @@ def main():
         
         if game_state.check_mate or game_state.stale_mate: 
             game_over = True
-            win_txt = 'Stalemate' if game_state.stale_mate else 'Black win by checkmate.' if game_state.white_to_move else 'White  win by checkmate.'
+            win_txt = 'Stalemate' if game_state.stale_mate else 'Black wins by checkmate.' if game_state.white_to_move else 'White  wins by checkmate.'
             draw_end_game_text(screen, win_txt)
 
 
