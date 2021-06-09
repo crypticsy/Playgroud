@@ -1,5 +1,5 @@
 """ 
---⪢ Main file responsible for handling user input and display current GameState.
+--⪢ Handling the AI moves.
 """
 
 
@@ -7,9 +7,9 @@ import os
 os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"                   # Hide pygame support information 
 
 import glob
-import ChessEngine
-import numpy as np
 import pygame as pg
+import ChessEngine
+import ChessAI
 
 
 
@@ -219,11 +219,19 @@ def main():
     move_made = False           # flag variable for when a move is made
     animate = False             # flag variable for when a move needs to be animated
     game_over = False           # flag variable for when game is over
+    
+    # if a human is playing white, then this will be True, else False
+    player_one = False           
 
+    # if a human is playing black, then this will be True, else False
+    player_two = False          
+    
 
 
     # infinite loop
     while running:
+
+        human_turn = (game_state.white_to_move and player_one) or (not game_state.white_to_move and player_two)                 # check if the human is controlling the turn
 
         for e in pg.event.get():                            # for each event in event queue
 
@@ -231,38 +239,39 @@ def main():
                 running = False
             
             elif not game_over and e.type == pg.MOUSEBUTTONDOWN:
-                location = pg.mouse.get_pos()               # (x, y) location fot the mouse
-                col = location[0] // SQ_SIZE
-                row = location[1] // SQ_SIZE
+                if not game_over and human_turn:
+                    location = pg.mouse.get_pos()               # (x, y) location fot the mouse
+                    col = location[0] // SQ_SIZE
+                    row = location[1] // SQ_SIZE
 
 
-                # storing player clicks
-                if sq_selected == (row, col) or col >= 8:   # in case the click is same as previous click, reset player clicks
-                    sq_selected = ()
-                    player_click.clear()
+                    # storing player clicks
+                    if sq_selected == (row, col) or col >= 8:   # in case the click is same as previous click, reset player clicks
+                        sq_selected = ()
+                        player_click.clear()
 
-                else:                                       # else update the new click position
-                    sq_selected = (row, col)
-                    player_click.append(sq_selected)
+                    else:                                       # else update the new click position
+                        sq_selected = (row, col)
+                        player_click.append(sq_selected)
 
-                
-                if len(player_click) == 2:              # when 2 unique clicks have been identified
-                    move = ChessEngine.Move( player_click[0], player_click[1], game_state.board )
                     
-                    for i in range(len(valid_moves)):
-                        if move == valid_moves[i]:
-                            game_state.make_move(valid_moves[i])
-
-                            move_made = True
-                            animate = True
-
-                            # reset input
-                            sq_selected = ()
-                            player_click.clear()
-                            break
+                    if len(player_click) == 2:              # when 2 unique clicks have been identified
+                        move = ChessEngine.Move( player_click[0], player_click[1], game_state.board )
                         
-                    else:
-                        player_click = [sq_selected]
+                        for i in range(len(valid_moves)):
+                            if move == valid_moves[i]:
+                                game_state.make_move(valid_moves[i])
+
+                                move_made = True
+                                animate = True
+
+                                # reset input
+                                sq_selected = ()
+                                player_click.clear()
+                                break
+                            
+                        else:
+                            player_click = [sq_selected]
 
 
             elif e.type == pg.KEYDOWN and e.key == pg.K_z:      # trigger for undoing a move
@@ -277,6 +286,13 @@ def main():
                 player_click.clear()
                 move_made = False
                 animate = False
+
+        # AI move finder
+        if not game_over and not human_turn:
+            AI_move = ChessAI.find_random_move(valid_moves)
+            game_state.make_move(AI_move)
+            move_made = True
+            animate = True
 
 
         if move_made:
