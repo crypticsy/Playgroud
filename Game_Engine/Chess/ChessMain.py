@@ -2,7 +2,6 @@
 --⪢ Handling the AI moves.
 """
 
-
 import os
 os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"                   # Hide pygame support information 
 
@@ -278,6 +277,7 @@ def main():
                 game_state.undo_move()
                 move_made = True
                 animate = False
+                game_over = False
             
             elif e.type == pg.KEYDOWN and e.key == pg.K_z:      # trigger for resetting the board
                 game_state = ChessEngine.GameState()
@@ -286,10 +286,13 @@ def main():
                 player_click.clear()
                 move_made = False
                 animate = False
+                game_over = False
 
         # AI move finder
         if not game_over and not human_turn:
-            AI_move = ChessAI.find_random_move(valid_moves)
+            AI_move = ChessAI.find_best_move_greedy(game_state, valid_moves)
+            if AI_move is None: AI_move = ChessAI.find_random_move(valid_moves)                             # incase where a best move isn't found, play a random move
+            
             game_state.make_move(AI_move)
             move_made = True
             animate = True
