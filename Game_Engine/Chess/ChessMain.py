@@ -5,8 +5,10 @@
 import os
 os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"                   # Hide pygame support information 
 
-import glob
+import glob, sys
+from multiprocessing import Process, Queue
 import pygame as pg
+
 import ChessEngine
 import ChessAI
 
@@ -213,17 +215,21 @@ def main():
     running = True
     sq_selected = ()             # store last click of the user
     player_click = []            # store clicks up to two clicks 
+    move_finder_frocess = None   # allow multi processing      
     
     valid_moves = game_state.get_all_valid_moves()
     move_made = False           # flag variable for when a move is made
     animate = False             # flag variable for when a move needs to be animated
     game_over = False           # flag variable for when game is over
+    ai_thinking = False         # flag variable for when the AI is finding best move
     
     # if a human is playing white, then this will be True, else False
     player_one = False           
 
     # if a human is playing black, then this will be True, else False
     player_two = False          
+
+
     
 
 
@@ -235,14 +241,14 @@ def main():
         for e in pg.event.get():                            # for each event in event queue
 
             if e.type == pg.QUIT:                           # trigger for ending infinite loop
-                running = False
-            
+                pg.quit()
+                sys.exit()
+
             elif not game_over and e.type == pg.MOUSEBUTTONDOWN:
                 if not game_over and human_turn:
                     location = pg.mouse.get_pos()               # (x, y) location fot the mouse
                     col = location[0] // SQ_SIZE
                     row = location[1] // SQ_SIZE
-
 
                     # storing player clicks
                     if sq_selected == (row, col) or col >= 8:   # in case the click is same as previous click, reset player clicks
@@ -279,7 +285,7 @@ def main():
                 animate = False
                 game_over = False
             
-            elif e.type == pg.KEYDOWN and e.key == pg.K_z:      # trigger for resetting the board
+            elif e.type == pg.KEYDOWN and e.key == pg.K_r:      # trigger for resetting the board
                 game_state = ChessEngine.GameState()
                 valid_moves = game_state.get_all_valid_moves()
                 sq_selected = ()
@@ -290,7 +296,8 @@ def main():
 
         # AI move finder
         if not game_over and not human_turn:
-            AI_move = ChessAI.find_best_move(game_state, valid_moves)
+            
+            AI_move = ChessAI.find_best_move(game_state, valid_moves, ())
             game_state.make_move(AI_move)
             move_made = True
             animate = True

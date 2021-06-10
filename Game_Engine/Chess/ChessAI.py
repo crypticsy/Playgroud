@@ -10,7 +10,7 @@ piece_score = {"K": 0, "Q": 9, "R": 5, "B": 3, "N": 3, "P": 1}
 
 CHECKMATE = 1000
 STALEMATE = 0
-DEPTH = 2
+DEPTH = 3
 
 knight_scores = [[0.0,  0.1,    0.2,    0.2,    0.2,    0.2,    0.1,    0.0],
                  [0.1,  0.3,    0.5,    0.5,    0.5,    0.5,    0.3,    0.1],
@@ -79,7 +79,7 @@ def score_board(game_state):
     for row, pieces in enumerate(game_state.board):                            
         for col, piece in enumerate(pieces):  
             if piece == "--": continue
-            piece_position_score = 0 if piece[1] == "K" else piece_position_scores[piece][row][col]
+            piece_position_score = 0 if piece[1] == "K" else piece_position_scores[piece][row][col]             # add heuristic based on piece position
 
             if piece[0] == "w":
                 score += piece_score[piece[1]] + piece_position_score
@@ -174,7 +174,7 @@ def find_move_min_max(game_state, valid_moves, depth, white_to_move):
  
 
 
-def find_move_nega_max(game_state, valid_moves, depth, turn_multiplier):
+def find_move_nega_max(game_state, valid_moves, depth, alpha, beta, turn_multiplier):
     """ The best move based on nega max algorithm """
     
     global next_move
@@ -186,27 +186,30 @@ def find_move_nega_max(game_state, valid_moves, depth, turn_multiplier):
         
         game_state.make_move(move)
         next_moves = game_state.get_all_valid_moves()
-        score = -find_move_nega_max(game_state, next_moves, depth-1, -turn_multiplier)
+        score = -find_move_nega_max(game_state, next_moves, depth-1,  -beta, -alpha, -turn_multiplier)
 
         if score > max_score:
             max_score = score
             if depth == DEPTH: next_move = move
 
         game_state.undo_move()
+        
+        if max_score > alpha: alpha = max_score         # pruning happens
+        if alpha >= beta: break
 
     return max_score
 
 
 
-def find_best_move(game_state, valid_moves):
+def find_best_move(game_state, valid_moves, return_queue):
     """  Helper method to make the first recursive call based on the min max algorithm """
     
     global next_move
     next_move = None
     random.shuffle(valid_moves)
 
-    # find_move_min_max(game_state, valid_moves, DEPTH, game_state.white_to_move)                             # only min max implementation
-    find_move_nega_max(game_state, valid_moves, DEPTH, 1 if game_state.white_to_move else -1)               # neg max implementation
+    # find_move_min_max(game_state, valid_moves, DEPTH, game_state.white_to_move)                                                   # only min max implementation
+    find_move_nega_max(game_state, valid_moves, DEPTH, -CHECKMATE, CHECKMATE, 1 if game_state.white_to_move else -1)               # nega max with alpha beta pruning
 
-    if next_move is None: return find_random_move(valid_moves)                                              # incase where a best move isn't found, play a random move
+    # return_queue.put(next_move)
     return next_move
