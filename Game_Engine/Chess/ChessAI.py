@@ -10,7 +10,7 @@ piece_score = {"K": 0, "Q": 9, "R": 5, "B": 3, "N": 3, "P": 1}
 
 CHECKMATE = 1000
 STALEMATE = 0
-DEPTH = 3
+DEPTH = 2
 
 knight_scores = [[0.0,  0.1,    0.2,    0.2,    0.2,    0.2,    0.1,    0.0],
                  [0.1,  0.3,    0.5,    0.5,    0.5,    0.5,    0.3,    0.1],
@@ -134,15 +134,18 @@ def find_move_min_max(game_state, valid_moves, depth, white_to_move):
     
     global next_move
     
-    if depth == 0: return score_board(game_state)
+    if depth == 0: return score_board(game_state)                   # base case to stop infinite recursion
 
     if white_to_move:
+
         max_score = -CHECKMATE
         for move in valid_moves:
+
             game_state.make_move(move)
             next_moves = game_state.get_all_valid_moves()
             score = find_move_min_max(game_state, next_moves, depth-1, False)
-            if score> max_score:
+
+            if score > max_score:
                 max_score = score
                 if depth == DEPTH:
                     next_move = move
@@ -152,11 +155,14 @@ def find_move_min_max(game_state, valid_moves, depth, white_to_move):
         return max_score
 
     else:
+
         min_score = CHECKMATE
         for move in valid_moves:
+
             game_state.make_move(move)
             next_moves = game_state.get_all_valid_moves()
             score = find_move_min_max(game_state, next_moves, depth-1, True)
+
             if score < min_score:
                 min_score = score
                 if depth == DEPTH:
@@ -165,18 +171,42 @@ def find_move_min_max(game_state, valid_moves, depth, white_to_move):
             game_state.undo_move()
     
         return min_score
+ 
+
+
+def find_move_nega_max(game_state, valid_moves, depth, turn_multiplier):
+    """ The best move based on nega max algorithm """
     
+    global next_move
+    
+    if depth == 0: return turn_multiplier * score_board(game_state)                   # base case to stop infinite recursion
+
+    max_score = -CHECKMATE
+    for move in valid_moves:
+        
+        game_state.make_move(move)
+        next_moves = game_state.get_all_valid_moves()
+        score = -find_move_nega_max(game_state, next_moves, depth-1, -turn_multiplier)
+
+        if score > max_score:
+            max_score = score
+            if depth == DEPTH: next_move = move
+
+        game_state.undo_move()
+
+    return max_score
 
 
 
-
-def find_best_move_min_max(game_state, valid_moves):
-    """  Helper method to make the first recursive call """
+def find_best_move(game_state, valid_moves):
+    """  Helper method to make the first recursive call based on the min max algorithm """
     
     global next_move
     next_move = None
     random.shuffle(valid_moves)
 
-    find_move_min_max(game_state, valid_moves, DEPTH, game_state.white_to_move)
-    
+    # find_move_min_max(game_state, valid_moves, DEPTH, game_state.white_to_move)                             # only min max implementation
+    find_move_nega_max(game_state, valid_moves, DEPTH, 1 if game_state.white_to_move else -1)               # neg max implementation
+
+    if next_move is None: return find_random_move(valid_moves)                                              # incase where a best move isn't found, play a random move
     return next_move
