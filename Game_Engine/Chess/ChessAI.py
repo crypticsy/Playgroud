@@ -65,19 +65,14 @@ piece_position_scores = {"wN": knight_scores, "bN": knight_scores[::-1],
 
 
 
-
-
-def find_random_move(valid_moves):
-    """ Picks and returns a random valid move. """
-    return random.choice(valid_moves)
-
-
-
-
-
-
 def score_board(game_state):
     """ Score the board. A positive score is good for white, a negative score is good for black. """
+    
+    if game_state.check_mate:
+        return -CHECKMATE if game_state.white_to_move else CHECKMATE                  # win condition reached
+
+    elif game_state.stale_mate:
+        return STALEMATE
 
     score = 0
 
@@ -95,6 +90,15 @@ def score_board(game_state):
 
 
 
+
+
+
+
+
+
+def find_random_move(valid_moves):
+    """ Picks and returns a random valid move. """
+    return random.choice(valid_moves)
 
 
 
@@ -122,9 +126,57 @@ def find_best_move_greedy(game_state, valid_moves):
         game_state.undo_move()
     
     return best_move
+ 
+
+
+def find_move_min_max(game_state, valid_moves, depth, white_to_move):
+    """ The best move based on min max algorithm alone """
+    
+    global next_move
+    
+    if depth == 0: return score_board(game_state)
+
+    if white_to_move:
+        max_score = -CHECKMATE
+        for move in valid_moves:
+            game_state.make_move(move)
+            next_moves = game_state.get_all_valid_moves()
+            score = find_move_min_max(game_state, next_moves, depth-1, False)
+            if score> max_score:
+                max_score = score
+                if depth == DEPTH:
+                    next_move = move
+
+            game_state.undo_move()
+
+        return max_score
+
+    else:
+        min_score = CHECKMATE
+        for move in valid_moves:
+            game_state.make_move(move)
+            next_moves = game_state.get_all_valid_moves()
+            score = find_move_min_max(game_state, next_moves, depth-1, True)
+            if score < min_score:
+                min_score = score
+                if depth == DEPTH:
+                    next_move = move
+
+            game_state.undo_move()
+    
+        return min_score
     
 
 
 
 
+def find_best_move_min_max(game_state, valid_moves):
+    """  Helper method to make the first recursive call """
+    
+    global next_move
+    next_move = None
+    random.shuffle(valid_moves)
 
+    find_move_min_max(game_state, valid_moves, DEPTH, game_state.white_to_move)
+    
+    return next_move
