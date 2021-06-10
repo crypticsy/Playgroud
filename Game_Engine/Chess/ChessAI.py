@@ -211,5 +211,4 @@ def find_best_move(game_state, valid_moves, return_queue):
     # find_move_min_max(game_state, valid_moves, DEPTH, game_state.white_to_move)                                                   # only min max implementation
     find_move_nega_max(game_state, valid_moves, DEPTH, -CHECKMATE, CHECKMATE, 1 if game_state.white_to_move else -1)               # nega max with alpha beta pruning
 
-    # return_queue.put(next_move)
-    return next_move
+    return_queue.put(next_move)

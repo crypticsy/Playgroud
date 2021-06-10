@@ -215,22 +215,21 @@ def main():
     running = True
     sq_selected = ()             # store last click of the user
     player_click = []            # store clicks up to two clicks 
-    move_finder_frocess = None   # allow multi processing      
+    move_finder_process = None   # allow multi processing      
     
     valid_moves = game_state.get_all_valid_moves()
     move_made = False           # flag variable for when a move is made
     animate = False             # flag variable for when a move needs to be animated
     game_over = False           # flag variable for when game is over
     ai_thinking = False         # flag variable for when the AI is finding best move
-    
+    move_undone = False         # flag variable for when the move is undone
+
     # if a human is playing white, then this will be True, else False
     player_one = False           
 
     # if a human is playing black, then this will be True, else False
     player_two = False          
 
-
-    
 
 
     # infinite loop
@@ -284,6 +283,12 @@ def main():
                 move_made = True
                 animate = False
                 game_over = False
+
+                if ai_thinking:
+                    move_finder_process.terminate()
+                    ai_thinking = False
+
+                move_undone = True
             
             elif e.type == pg.KEYDOWN and e.key == pg.K_r:      # trigger for resetting the board
                 game_state = ChessEngine.GameState()
@@ -294,13 +299,30 @@ def main():
                 animate = False
                 game_over = False
 
+                if ai_thinking:
+                    move_finder_process.terminate()
+                    ai_thinking = False
+                    
+                move_undone = True
+
         # AI move finder
-        if not game_over and not human_turn:
-            
-            AI_move = ChessAI.find_best_move(game_state, valid_moves, ())
-            game_state.make_move(AI_move)
-            move_made = True
-            animate = True
+        if not game_over and not human_turn and not move_undone:
+
+            if not ai_thinking:
+                ai_thinking = True
+                return_queue = Queue()                          # store and pass data between threads
+                move_finder_process = Process(target=ChessAI.find_best_move, args=(game_state, valid_moves, return_queue))
+                move_finder_process.start()
+
+            if not move_finder_process.is_alive():
+                ai_move = return_queue.get()
+
+                if ai_move is None: ai_move = ChessAI.findRandomMove(valid_moves)
+
+                game_state.make_move(ai_move)
+                move_made = True
+                animate = True
+                ai_thinking = False
 
 
         if move_made:
@@ -308,6 +330,7 @@ def main():
             valid_moves = game_state.get_all_valid_moves()
             move_made = False
             animate = False
+            move_undone = False
             
         if not game_over:
             draw_GameState(screen, game_state, valid_moves, sq_selected, move_log_font)
