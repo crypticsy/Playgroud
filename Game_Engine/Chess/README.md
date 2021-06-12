@@ -26,7 +26,7 @@ This project includes a full chess engine, gui engine, and an AI engine. The AI 
 
 <a name="usage"></a>
 ## Usage
-To install this project, make sure you have the correct version of Python and Pygame. Certain versions of pygame are no longer supported on macOS Catalina.
+To install this project, make sure you have the correct version of Python and Pygame. 
 
 <a name="installation"></a>
 ### Installation
